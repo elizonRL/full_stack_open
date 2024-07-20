@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Server
+
+    User->>Browser: Type text in the field
+    User->>Browser: Click "Save"
+    Browser->>Server: POST with content of the new note
+    Server->>Server: Process and save the note
+    Server-->>Browser: Response (possibly with note ID)
+    Browser->>Browser: Run JavaScript function to update the interface with the new note
