@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Server
+
+    User->>Browser: Navigates to SPA version
+    Browser->>Server: Requests SPA content
+    Server-->>Browser: Sends SPA content
+
