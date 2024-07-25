@@ -1,12 +1,12 @@
-import { useState } from "react";
+import  axios  from 'axios';
+import { useEffect, useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
+
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
@@ -22,7 +22,7 @@ const App = () => {
         </p>
       ));
     } else {
-      if(filteredPersons.length === 0) return <p>No matches found</p>
+      if (!filteredPersons.length) return <p>No matches found</p>;
       return filteredPersons.map((person) => (
         <p key={person.id}>
           {person.name} {person.number}
@@ -31,60 +31,48 @@ const App = () => {
     }
   };
   console.log(filteredPersons);
-  const hanelSubmit = (event) => {
+  const handelSubmit = (event) => {
     event.preventDefault();
     const Person = persons.find((person) => person.name === newName);
     if (Person) {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    console.log(Person);
     const personObject = {
       name: newName,
-      phoneNumber: phoneNumber,
+      number: phoneNumber,
+      id: persons.length + 1,
     };
     setPersons(persons.concat(personObject));
     setNewName("");
     setPhoneNumber("");
   };
   console.log(persons);
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+      console.log("Response Data-->",response.data);
+    });
+    
+  }, [])
 
   return (
     <div>
       <h1>Phonebook</h1>
-
       <div>
-        filter shown with
-        <input
-          value={newFilter}
-          onChange={(event) => setNewFilter(event.target.value)}
-        />
+        filter shown with:
+        <Filter setSearch={setNewFilter} Search={newFilter} />
       </div>
-
       <h2>Add new</h2>
-      <form onSubmit={hanelSubmit}>
-        <div>
-          name:
-          <input
-            value={newName}
-            onChange={(event) => setNewName(event.target.value)}
-          />
-        </div>
-        <div>
-          Number:
-          <input
-            value={phoneNumber}
-            onChange={(event) => setPhoneNumber(event.target.value)}
-          />
-        </div>
-        <div>
-          <button>add</button>
-        </div>
-      </form>
-      <div>Debug {newName}</div>
+      <PersonForm
+        name={newName}
+        setName={setNewName}
+        number={phoneNumber}
+        setNumber={setPhoneNumber}
+        onSubmit={handelSubmit}
+      />
       <h2>Numbers</h2>
-
-      {machesFilter()}
+      <Persons personsData={machesFilter}/>
     </div>
   );
 };
