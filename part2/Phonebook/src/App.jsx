@@ -1,9 +1,8 @@
-import  axios  from 'axios';
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-
+import phonesServices from "./Services/phonesServices";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -14,19 +13,31 @@ const App = () => {
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(newFilter.toLowerCase())
   );
+  const deletePerson = (id) => {
+    phonesServices.deletePerson(id).then((response) => {
+      console.log("dete persons",response);
+      /* setPersons(response.filter((person) => person.id !== id)); */
+    });
+  };
   const machesFilter = () => {
     if (newFilter === "") {
       return persons.map((person) => (
-        <p key={person.id}>
-          {person.name} {person.number}
-        </p>
+        <>
+          <p key={person.id}>
+            {person.name} {person.number}
+          </p>
+          <button onClick={() => deletePerson(person.id)}>delete</button>
+        </>
       ));
     } else {
       if (!filteredPersons.length) return <p>No matches found</p>;
       return filteredPersons.map((person) => (
-        <p key={person.id}>
-          {person.name} {person.number}
-        </p>
+        <>
+          <p key={person.id}>
+            {person.name} {person.number}
+          </p>
+          <button onClick={() => deletePerson(person.id)}>delete</button>
+        </>
       ));
     }
   };
@@ -47,14 +58,12 @@ const App = () => {
     setNewName("");
     setPhoneNumber("");
   };
-  console.log(persons);
+  console.log("Persons ->", persons);
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-      console.log("Response Data-->",response.data);
+    phonesServices.getAll().then((initialPhone) => {
+      setPersons(initialPhone);
     });
-    
-  }, [])
+  }, []);
 
   return (
     <div>
@@ -72,7 +81,7 @@ const App = () => {
         onSubmit={handelSubmit}
       />
       <h2>Numbers</h2>
-      <Persons personsData={machesFilter}/>
+      <Persons personsData={machesFilter} />
     </div>
   );
 };
