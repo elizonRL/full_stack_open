@@ -14,33 +14,14 @@ const App = () => {
     person.name.toLowerCase().includes(newFilter.toLowerCase())
   );
   const deletePerson = (id) => {
-    phonesServices.deletePerson(id).then((response) => {
-      console.log("dete persons",response);
-      /* setPersons(response.filter((person) => person.id !== id)); */
-    });
-  };
-  const machesFilter = () => {
-    if (newFilter === "") {
-      return persons.map((person) => (
-        <>
-          <p key={person.id}>
-            {person.name} {person.number}
-          </p>
-          <button onClick={() => deletePerson(person.id)}>delete</button>
-        </>
-      ));
-    } else {
-      if (!filteredPersons.length) return <p>No matches found</p>;
-      return filteredPersons.map((person) => (
-        <>
-          <p key={person.id}>
-            {person.name} {person.number}
-          </p>
-          <button onClick={() => deletePerson(person.id)}>delete</button>
-        </>
-      ));
+    const confirm = window.confirm("are you shore");
+    if (confirm) {
+      phonesServices.deletePerson(id).then((response) => {
+        console.log(response,"has beem delet");
+      });
     }
   };
+  
   console.log(filteredPersons);
   const handelSubmit = (event) => {
     event.preventDefault();
@@ -64,6 +45,21 @@ const App = () => {
       setPersons(initialPhone);
     });
   }, []);
+  const machesFilter = () => {
+    if (newFilter === "") {
+      return <Persons personsData={persons} onDelete={deletePerson} />;
+    } else {
+      if (!filteredPersons.length) return <p>No matches found</p>;
+      return filteredPersons.map((person) => (
+        <>
+          <p key={person.id}>
+            {person.name} {person.number}
+          </p>
+          <button onClick={() => deletePerson(person.id)}>delete</button>
+        </>
+      ));
+    }
+  };
 
   return (
     <div>
@@ -81,7 +77,7 @@ const App = () => {
         onSubmit={handelSubmit}
       />
       <h2>Numbers</h2>
-      <Persons personsData={machesFilter} />
+      {machesFilter()}
     </div>
   );
 };

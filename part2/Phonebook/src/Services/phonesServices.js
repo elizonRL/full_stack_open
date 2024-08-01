@@ -10,7 +10,7 @@ const deletePerson = (id) => {
   const request = axios.delete(`${API_URL}/${id}`);
   return request.then((response) => {
     response.data;
-    console.log("data from services",response.data);
+   
   });
 };
 
