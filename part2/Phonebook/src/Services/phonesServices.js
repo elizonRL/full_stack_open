@@ -10,8 +10,8 @@ const deletePerson = (id) => {
   const request = axios.delete(`${API_URL}/${id}`);
   return request.then((response) => response.data);
 };
-const editPerson = (id)=>{
-  const request = axios.put(`${API_URL}/${id}`);
+const editPerson = (id, upDatePhone)=>{
+  const request = axios.put(`${API_URL}/${id}`, upDatePhone);
   return request.then(response => response.data);
 }
 

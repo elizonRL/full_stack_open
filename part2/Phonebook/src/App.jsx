@@ -26,9 +26,17 @@ const App = () => {
   console.log(filteredPersons);
   const handelSubmit = (event) => {
     event.preventDefault();
-    const Person = persons.find((person) => person.name === newName);
+    const Person = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase());
     if (Person) {
-      alert(`${newName} is already added to phonebook`);
+      const confrimEdit = window.confirm(`${newName} is already added to phonebook, Replace old number with a new one?`);
+      if (!confrimEdit) return;
+      const editPerson = { ...Person, number: phoneNumber };
+      console.log(editPerson.id);
+      phonesServices.editPerson(editPerson.id,editPerson).then((response) => {
+        setPersons(persons.map((person) => (person.id !== Person.id ? person : response)));
+        setNewName("");
+        setPhoneNumber("");
+      });
       return;
     }
     const personObject = {
