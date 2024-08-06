@@ -23,7 +23,7 @@ const App = () => {
     }
   };
   
-  console.log(filteredPersons);
+
   const handelSubmit = (event) => {
     event.preventDefault();
     const Person = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase());
