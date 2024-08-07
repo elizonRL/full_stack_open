@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 function App() {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
- /*  const [country, setCountry] = useState([]); */
+  const [country, setCountry] = useState(null);
+
   useEffect(() => {
     axios
       .get("https://studies.cs.helsinki.fi/restcountries/api/all")
@@ -15,17 +16,35 @@ function App() {
   const countriesToShow = countries.filter((country) =>
     country.name.common.toLowerCase().includes(search.toLowerCase())
   );
+  const showCountries = (nameOfCountry) => {
+    console.log("name of country", nameOfCountry);
+    axios
+      .get(
+        `https://studies.cs.helsinki.fi/restcountries/api/name/${nameOfCountry}`
+      )
+      .then((response) => {
+        setCountry(response.data);
+      });
+
+    console.log("country for name -->", country);
+  };
+
   console.log("countries to show", countriesToShow);
   const findCountry = () => {
-    if(search === "") {
-      return null
+    if (search === "") {
+      return null;
     }
     if (countriesToShow.length > 10) {
       return "Too many matches, specify another filter";
     }
     if (countriesToShow.length > 1 && countriesToShow.length <= 10) {
       return countriesToShow.map((country) => (
-        <li key={country.name.common}>{country.name.common}</li>
+        <>
+          <li key={country.name.common}>{country.name.common}</li>
+          <button onClick={() => showCountries(country.name.common)}>
+            show
+          </button>
+        </>
       ));
     }
     if (countriesToShow.length === 1) {
@@ -44,9 +63,6 @@ function App() {
         </div>
       );
     }
-    /* if (countriesToShow.length === 1) {
-      return countriesToShow[0];
-    } */
   };
   console.log("counties -->", countriesToShow);
   return (
@@ -58,8 +74,22 @@ function App() {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />
+      <ul>{findCountry()}</ul>
       <ul>
-        {findCountry()}
+        {country && (
+          <>
+            <h2>{country.name.common}</h2>
+            <p>capital {country.capital}</p>
+            <p>area {country.area}</p>
+            <h3>languages:</h3>
+            <ul>
+              {Object.values(country.languages).map((language) => (
+                <li key={language}>{language}</li>
+              ))}
+            </ul>
+            <img src={country.flags.png} alt="flag" />
+          </>
+        )}
       </ul>
     </>
   );
