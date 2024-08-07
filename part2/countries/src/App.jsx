@@ -28,7 +28,18 @@ function App() {
 
     console.log("country for name -->", country);
   };
-
+  const getWeather = (country) => {
+    const lat = country[0].latlng[0];
+    const lon = country[0].latlng[1];
+    axios
+      .get(
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid={c71e317abe471e186a37a28c38ce6f40}`
+      )
+      .then((response) => {
+        console.log("weather", response.data);
+      });
+  };
+ 
   console.log("countries to show", countriesToShow);
   const findCountry = () => {
     if (search === "") {
@@ -48,6 +59,7 @@ function App() {
       ));
     }
     if (countriesToShow.length === 1) {
+      getWeather(countriesToShow);
       return (
         <div>
           <h2>{countriesToShow[0].name.common}</h2>
