@@ -18,7 +18,7 @@ const App = () => {
     if (confirm) {
       phonesServices.deletePerson(id).then((response) => {
         console.log(response,"has beem delet");
-        setPersons(persons.filter(p => p.id !== response.id))
+        setPersons(persons.filter(p => p.id !== id))
       });
     }
   };
