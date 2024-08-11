@@ -42,9 +42,11 @@ const App = () => {
     const personObject = {
       name: newName,
       number: phoneNumber,
-      id: persons.length + 1,
     };
-    setPersons(persons.concat(personObject));
+    phonesServices.addPersons(personObject).then(response => {
+      setPersons(persons.concat(response));
+    })
+    
     setNewName("");
     setPhoneNumber("");
   };
