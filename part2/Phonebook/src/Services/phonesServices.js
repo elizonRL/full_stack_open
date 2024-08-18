@@ -8,6 +8,7 @@ const getAll = () => {
   return request.then((response) => response.data);
 };
 const addPersons = (person)=>{
+  console.log(person)
   const request = axios.post(API_URL, person)
   return request.then(response => response.data)
 } 
